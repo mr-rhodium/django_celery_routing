@@ -1,0 +1,29 @@
+services:
+  web:
+    build: .
+    image: web
+    ports:
+      - "5000:5000"
+    command: bash -c "python manage.py runserver 0.0.0.0:5000"
+    depends_on:
+      - redis_server
+  celery_worker_email:
+    image: web
+    command: celery -A core.celery worker --loglevel=info -Q email-queue
+    depends_on:
+      - redis_server
+  celery_worker_general:
+    image: web
+    command: celery -A core.celery worker --loglevel=info -Q general-queue
+    depends_on:
+      - redis_server
+  celery_worker_helper:
+    image: web
+    command: celery -A core.celery worker --loglevel=info -Q helper-queue
+    depends_on:
+      - redis_server
+  redis_server:
+    image: redis:alpine
+    command: --port 6380
+    ports:
+      - "6380:6380"
