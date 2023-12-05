@@ -17,7 +17,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # env
 env = environ.Env()
-env.read_env(str(BASE_DIR / ".env"))
+DOCKER_USE = env.bool("DOCKER_USE", default=True)
+if DOCKER_USE:
+    env.read_env(str(BASE_DIR / ".env"))
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
